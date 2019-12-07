@@ -1,0 +1,8 @@
+name: MVRandomPortal
+author: Strahan
+main: com.sylvcraft.MVRandomPortal
+version: 1.0
+description: Makes a MV portal teleport to a group of random MV portals
+commands:
+  mvrp:
+    description: Plugin command

@@ -1,0 +1,15 @@
+messages:
+  access-denied: '&cAccess denied!'
+  invalid: '&cInvalid portal!'
+  portal-add-success: '&bAdded &6%newportal% &bto &6%portal%'
+  portal-add-fail: '&cCould not add portal!'
+  portal-del-success: '&bRemoved &6%delportal% &bfrom &6%portal%'
+  portal-del-last: '&bRemoved &6%delportal% &bfrom &6%portal%%br%&bThat was the last portal set; this effectively returns %portal% to regular operation.'
+  portal-del-all: '&bRemoved all portals &bfrom &6%portal%%br%&bIt will now resume normal operations.'
+  portal-del-fail: '&cCould not remove portal!'
+  list-header: '&bPortals:%br%'
+  list-data: '&6%portal%'
+  list-none: '&cThere are no portals'
+  portal-toggle: '&bPortal &6%portal% &bis now &6%result%'
+global:
+  enabled: true
