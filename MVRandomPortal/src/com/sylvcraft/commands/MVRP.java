@@ -22,15 +22,20 @@ public class MVRP implements TabExecutor {
 
   @Override
   public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
-    if (!sender.hasPermission("mvrp.admin")) return null;
     List<String> portals = new ArrayList<>();
     
     switch (args.length) {
     case 1:
-      return StringUtil.copyPartialMatches(args[0], new ArrayList<String>(Arrays.asList("add","del","list","toggle")), new ArrayList<String>());
+      List<String> cmds = new ArrayList<String>();
+      for (String command : Arrays.asList("add","del","list","toggle","reload")) if (hasPermission(sender, command)) cmds.add(command);
+      return StringUtil.copyPartialMatches(args[0], cmds, new ArrayList<String>());
 
     case 2:
+      if (!hasPermission(sender, args[0].toLowerCase())) return new ArrayList<String>(Arrays.asList("")); 
       switch (args[0].toLowerCase()) {
+      case "reload":
+        return new ArrayList<String>(Arrays.asList(""));
+        
       case "list":
       case "del":
         portals = plugin.getPortals();
@@ -44,6 +49,7 @@ public class MVRP implements TabExecutor {
       return StringUtil.copyPartialMatches(args[1], portals, new ArrayList<String>());
       
     case 3:
+      if (!hasPermission(sender, args[0].toLowerCase())) return new ArrayList<String>(Arrays.asList("")); 
       switch (args[0].toLowerCase()) {
       case "toggle":
       case "list":
@@ -67,6 +73,11 @@ public class MVRP implements TabExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
     try {
+      if (!hasPermission(sender, "*")) {
+        plugin.msg("access-denied", sender);
+        return true;
+      }
+      
       if (args.length == 0) {
         showHelp(sender);
         return true;
@@ -74,9 +85,24 @@ public class MVRP implements TabExecutor {
 
       Map<String, String> data = new HashMap<String, String>();
       switch (args[0].toLowerCase()) {
+      case "reload":
+        if (!hasPermission(sender, "reload")) { 
+          plugin.msg("access-denied", sender);
+          return true;
+        }
+
+        plugin.reloadConfig();
+        plugin.msg("reloaded", sender);
+        break;
+        
       case "add":
+        if (!hasPermission(sender, "add")) { 
+          plugin.msg("access-denied", sender);
+          return true;
+        }
+        
         if (args.length < 3) {
-          showHelp(sender);
+          showHelp(sender, "add");
           return true;
         }
         
@@ -86,8 +112,13 @@ public class MVRP implements TabExecutor {
         break;
         
       case "del":
+        if (!hasPermission(sender, "del")) { 
+          plugin.msg("access-denied", sender);
+          return true;
+        }
+        
         if (args.length < 3) {
-          showHelp(sender);
+          showHelp(sender, "del");
           return true;
         }
         
@@ -95,6 +126,11 @@ public class MVRP implements TabExecutor {
         break;
         
       case "list":
+        if (!hasPermission(sender, "list")) { 
+          plugin.msg("access-denied", sender);
+          return true;
+        }
+        
         List<String> portals = (args.length == 1)?plugin.getPortals():plugin.getPortals(args[1]);
         if (portals.size() == 0) {
           plugin.msg("list-none", sender);
@@ -105,6 +141,11 @@ public class MVRP implements TabExecutor {
         break;
         
       case "toggle":
+        if (!hasPermission(sender, "toggle")) { 
+          plugin.msg("access-denied", sender);
+          return true;
+        }
+        
         if (args.length < 2) {
           showHelp(sender);
           return true;
@@ -112,13 +153,17 @@ public class MVRP implements TabExecutor {
         
         Boolean result = toggleActive(args[1]);
         if (result == null) {
-          plugin.msg("invalid", sender);
+          plugin.msg("invalid-portal", sender);
           return true;
         }
         
         data.put("%portal%", args[1].equals("*")?"all portals":args[1]);
         data.put("%result%", result?"enabled":"disabled");
         plugin.msg("portal-toggle", sender, data);
+        break;
+        
+      default:
+        plugin.msg("invalid-cmd", sender);
         break;
       }
 
@@ -172,7 +217,7 @@ public class MVRP implements TabExecutor {
     data.put("%delportal%", portalToRemove);
     
     if (!plugin.isValidPortal(portal)) {
-      plugin.msg("invalid", sender, data);
+      plugin.msg("invalid-portal", sender, data);
       return;
     }
     
@@ -184,7 +229,7 @@ public class MVRP implements TabExecutor {
     }
     
     if (!plugin.isValidPortal(portal, portalToRemove)) {
-      plugin.msg("invalid", sender, data);
+      plugin.msg("invalid-portal", sender, data);
       return;
     }
 
@@ -219,45 +264,26 @@ public class MVRP implements TabExecutor {
       return 1;
     }
   }
-
+  
   void showHelp(CommandSender sender) {
-    int displayed = 0;
-    if (sender.hasPermission("MVRandomPortal.xxxx")) { plugin.msg("xxxx", sender); displayed++; }
-    if (displayed == 0) plugin.msg("access-denied", sender);
+    showHelp(sender, "add");
+    showHelp(sender, "del");
+    showHelp(sender, "list");
+    showHelp(sender, "toggle");
+    showHelp(sender, "reload");
+  }
+  
+  void showHelp(CommandSender sender, String topic) {
+    if (hasPermission(sender, topic)) plugin.msg("help-" + topic, sender);
+  }
+  
+  boolean hasPermission(CommandSender sender, String node) {
+    if (node.equals("*")) {
+      for (String tmpNode : Arrays.asList("add","del","list","toggle","reload")) if (sender.hasPermission("mvrp." + tmpNode)) return true;
+      return false;
+    }
+    
+    if (sender.hasPermission("mvrp.admin")) return true;
+    return sender.hasPermission("mvrp." + node);
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

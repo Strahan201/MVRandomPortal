@@ -1,6 +1,7 @@
 messages:
   access-denied: '&cAccess denied!'
-  invalid: '&cInvalid portal!'
+  invalid-portal: '&cInvalid portal!'
+  invalid-cmd: '&cThat is not a valid subcommand' 
   portal-add-success: '&bAdded &6%newportal% &bto &6%portal%'
   portal-add-fail: '&cCould not add portal!'
   portal-del-success: '&bRemoved &6%delportal% &bfrom &6%portal%'
@@ -11,5 +12,11 @@ messages:
   list-data: '&6%portal%'
   list-none: '&cThere are no portals'
   portal-toggle: '&bPortal &6%portal% &bis now &6%result%'
+  help-list: '&a/mvrp &2list%br%&6List all portals that have randomizations%br%%br%&a/mvrp &2list &7portal%br%&6List destination portals for selected portal%br%'
+  help-add: '&a/mvrp &2add &7existPortal portal%br%&6Adds a portal to the existing portals destination list%br%'
+  help-del: '&a/mvrp &2del &7existPortal portal%br%&6Removes portal from the existing portals destination list%br%%br%&a/mvrp &2del &7existPortal *%br%&6Removes all portals from the existing portals destination list%br%'
+  help-toggle: '&a/mvrp &2toggle &7portal%br%&6Toggles whether or not portal will randomize destination%br%%br%&a/mvrp &2toggle &7*%br%&6Toggles global functionality%br%'
+  help-reload:  '&a/mvrp &2reload%br%&6Reloads configuration from disk'
+  reloaded: '&aConfiguration reloaded!'
 global:
   enabled: true
